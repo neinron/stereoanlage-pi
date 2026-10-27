@@ -1,0 +1,10 @@
+[Unit]
+Description=Stereoanlage AirPlay 2
+After=pipewire.service wireplumber.service
+Requires=pipewire.service
+[Service]
+ExecStart=/usr/local/bin/shairport-sync -c %h/.config/shairport-sync.conf
+Restart=on-failure
+RestartSec=5
+[Install]
+WantedBy=default.target

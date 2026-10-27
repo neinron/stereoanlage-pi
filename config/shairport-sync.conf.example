@@ -1,0 +1,9 @@
+// Ausschnitt: bestätigte Einstellungen, kein vollständiger Ist-Snapshot.
+general = {
+    name = "Stereoanlage AirPlay";
+    output_backend = "pipewire";
+    interpolation = "soxr";
+};
+pipewire = {
+    application_name = "Stereoanlage AirPlay";
+};

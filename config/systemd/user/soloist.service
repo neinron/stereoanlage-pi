@@ -1,0 +1,13 @@
+[Unit]
+Description=Spotify Soloist HiFi Pi
+After=pipewire.service wireplumber.service
+Requires=pipewire.service
+[Service]
+Type=simple
+EnvironmentFile=%h/.soloist.env
+ExecStart=/usr/local/bin/soloist --device-name "Stereoanlage Spotify" --api-key ${SOLOIST_API_KEY} --pipewire-device alsa_output.platform-soc_sound.stereo-fallback --initial-volume 40 --cache-size 500 --ws 127.0.0.1:0
+Restart=on-failure
+RestartSec=10
+UMask=0077
+[Install]
+WantedBy=default.target

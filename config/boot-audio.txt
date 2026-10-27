@@ -1,0 +1,4 @@
+# Relevante Zeilen aus /boot/firmware/config.txt, nicht die ganze Datei ersetzen.
+dtparam=audio=off
+[all]
+dtoverlay=iqaudio-dacplus
