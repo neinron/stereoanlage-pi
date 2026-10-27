@@ -50,8 +50,8 @@ class Keyboard:
  def move(self,key):
   if key in ('LEFT','RIGHT'):self.col=(self.col+(-1 if key=='LEFT' else 1))%len(ROWS[self.row])
   else:
-   position=(self.col+0.5)/len(ROWS[self.row]);self.row=(self.row+(-1 if key=='UP' else 1))%len(ROWS)
-   self.col=min(len(ROWS[self.row])-1,int(position*len(ROWS[self.row])))
+   self.row=(self.row+(-1 if key=='UP' else 1))%len(ROWS)
+   self.col=min(self.col,len(ROWS[self.row])-1)
  def label(self,k):
   if len(k)==1:
    if self.altgr:return ALTGR.get(k,k)
@@ -285,7 +285,7 @@ class UI:
   mods=' · '.join(k for k,v in [('Shift',self.kb.shift),('Strg',self.kb.ctrl),('Alt',self.kb.alt),('AltGr',self.kb.altgr),('Feststelltaste',self.kb.caps)] if v)
   txt(1140,648,mods,19,'#9bceff')
   for row,keys in enumerate(ROWS):
-   width=(1812-(len(keys)-1)*8)/len(keys)
+   width=(1812-13*8)/14
    for col,key in enumerate(keys):
     x=54+col*(width+8);y=684+row*47
     selected=self.focus=='keys' and row==self.kb.row and col==self.kb.col
