@@ -19,9 +19,12 @@ Weniger Boottext wird für den nächsten Neustart in `cmdline.txt` vorgemerkt; v
 ## Fernbedienung und Tastatur
 
 - **OK** auf der Startansicht öffnet das Terminal.
-- **Pfeiltasten** wählen Bildschirmtasten aus, **OK** schreibt sie.
-- **Zurück** blendet das Terminal aus; die Sitzung läuft weiter.
-- Oberhalb der F-Tasten gelangt man mit **Pfeil hoch** zu den Diagnose-Abkürzungen. Diese schreiben normale Befehle in dieselbe Terminalsitzung.
+- Standard ist die **Kreuztastatur**: Eine Richtung öffnet eine der vier Buchstabengruppen. Mit Pfeilen ein Zeichen wählen und mit OK schreiben. Danach wird die Gruppenauswahl wieder angezeigt.
+- **OK in der Gruppenauswahl** öffnet die Ebenenauswahl links: ABC, 123, Sonderzeichen, Terminaltasten, QWERTZ, Diagnose oder Anleitung. Dort mit Pfeilen wählen und mit OK bestätigen.
+- **Zurück** innerhalb einer Gruppe oder der Ebenenauswahl bricht nur diese Auswahl ab.
+- **QWERTZ** ist die Alternative mit natürlicher ISO-Anordnung: versetzte Reihen, breite Modifikatortasten; Pfeile navigieren zur räumlich nächsten Taste. Die Taste **Kreuz** wechselt direkt zurück zur Kreuztastatur.
+- **Zurück** in der Gruppenauswahl bzw. bei QWERTZ blendet das Terminal aus; die Sitzung läuft weiter.
+- Bei QWERTZ gelangt man oberhalb der F-Tasten mit **Pfeil hoch** zu den Diagnose-Abkürzungen. Diese schreiben normale Befehle in dieselbe Terminalsitzung.
 - **Shift**, **Strg**, **Alt**, **AltGr** gelten jeweils für die nächste Zeichentaste; **Fest** bleibt aktiv. Erneutes Auswählen schaltet den Modifikator aus.
 - QWERTZ einschließlich Umlauten, ß, Zahlen, Sonderzeichen, F1–F12, Esc, Tab, Rücktaste, Entf, Einfg, Enter, Leertaste, Pos1/Ende, Bild hoch/runter und Pfeiltasten.
 - AltGr bietet insbesondere `@ € { [ ] } \ ~ |`; Strg+C/D/L sind zusätzlich direkt auswählbar. Auch Strg+Z und andere Kombinationen funktionieren über Strg plus Zeichentaste.
@@ -67,3 +70,5 @@ Für ursprüngliche Bootmeldungen die Display-Optionen aus `cmdline.txt` entfern
 - Sonos-Auswahl beschreibt die beabsichtigte Bedienung bei AirPlay-2-fähigen Sonos-Geräten. Der dokumentierte Wechselfehler ist weiterhin nicht als behoben bestätigt.
 
 Marken und Symbole gehören ihren jeweiligen Rechteinhabern; dies ist eine private Bedienhilfe.
+
+Die elf Tests prüfen zusätzlich die Erreichbarkeit sämtlicher 128 Einträge der Kreuztastatur, die Rückkehr zur Gruppenauswahl und die natürliche QWERTZ-Geometrie. Echte TV-Fernbedienung weiterhin noch nicht getestet.

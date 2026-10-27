@@ -53,6 +53,36 @@ class Tests(unittest.TestCase):
   t=app.Terminal('unused');t.stream.feed(b'Password: ')
   t.send(b'fake-test-password')
   self.assertNotIn('fake-test-password','\n'.join(t.screen.display))
+ def test_radial_all_characters_reachable(self):
+  from collections import deque
+  for page,values in app.RADIAL_PAGES.items():
+   self.assertEqual(len(values),32)
+   for group in range(4):
+    for target in range(8):
+     routes=deque([(0,[]) ]);seen=set();route=None
+     while routes:
+      index,path=routes.popleft()
+      if index==target:route=path;break
+      if index in seen:continue
+      seen.add(index)
+      for direction in app.RADIAL_DIRS:
+       r=app.Radial();r.page=page;r.group=group;r.index=index;r.handle(direction)
+       routes.append((r.index,path+[direction]))
+     self.assertIsNotNone(route)
+     r=app.Radial();r.page=page;r.handle(app.RADIAL_DIRS[group])
+     for direction in route:r.handle(direction)
+     self.assertEqual(r.handle('OK'),values[group*8+target])
+     self.assertIsNone(r.group)
+ def test_radial_back_and_options(self):
+  r=app.Radial();r.handle('UP');self.assertIsNone(r.handle('BACK'));self.assertIsNone(r.group)
+  r.handle('OK');r.handle('DOWN');r.handle('OK');self.assertEqual(r.page,'123')
+  r.handle('OK');r.option=4;self.assertEqual(r.handle('OK'),'QWERTZ')
+ def test_natural_keyboard_geometry(self):
+  for row,keys in enumerate(app.ROWS):
+   bounds=app.qwertz_geometry(row)
+   self.assertEqual(len(bounds),len(keys))
+   self.assertLessEqual(max(x+w for x,w in bounds),1876)
+  self.assertNotEqual(app.qwertz_geometry(2)[1][0],app.qwertz_geometry(3)[1][0])
  def test_rgb565(self):
   v=[0]*20;v[6]=16;v[8:11]=[11,5,0];v[11:14]=[5,6,0];v[14:17]=[0,5,0]
   pixels=[(random.randrange(256),random.randrange(256),random.randrange(256)) for _ in range(80)]
