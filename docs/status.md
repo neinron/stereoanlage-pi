@@ -32,3 +32,27 @@ Ein historischer Versuch mit angekündigtem Modell `One` und Hersteller `Sonos` 
 ## Nächste sinnvolle Prüfung
 
 Den Fehler mit Sendergerät, Betriebssystem, App, Sonos-Modell, Reihenfolge und Zeitpunkten reproduzieren. Erst anschließend gezielte Journalausschnitte lokal prüfen und eine einzelne begründete Änderung testen. Keine pauschale Neuinstallation.
+
+## Spätere Änderung am 27.10.2026: vorerst nur AirPlay
+
+Auf ausdrücklichen Wunsch Spotify pausiert, ohne Deinstallation: `soloist.service` ist jetzt inactive und disabled. Die obige Tabelle beschreibt die vorherige Bestandsaufnahme.
+
+Zusätzlicher Benutzer-Drop-in `~/.config/systemd/user/soloist.service.d/90-airplay-only.conf`:
+
+```ini
+[Unit]
+# Temporary AirPlay-only operation. Re-enable explicitly after review.
+ConditionPathExists=%h/.config/soloist-spotify-enabled
+```
+
+Die Markerdatei existiert nicht. Dadurch verhindert die Startbedingung auch eine Reaktivierung durch den weiterhin eingerichteten System-Timer `soloist-update.timer`. Der Timer selbst wurde nicht deaktiviert und kann weiterhin Updates versuchen. Installation, Schlüsseldatei und Musik wurden nicht gelöscht. Für spätere Reaktivierung nach Prüfung den Marker anlegen und den Benutzer-Dienst mit `systemctl --user enable --now soloist` aktivieren.
+
+Shairport Sync blieb durchgehend mit derselben PID aktiv; auch PipeWire und WirePlumber laufen weiter. Kein Pi- oder Audio-Dienst-Neustart.
+
+### Befunde im AirPlay-Fehlerzustand vor der Änderung
+
+- iPhone-Test mit Apple Music: Pi spielt nach Reboot; zusätzliches Sonos-Auswählen entfernt Pi-Auswahl; Rückkehr zum Pi scheitert, Sonos und iPhone spielen weiter.
+- Shairport Sync nimmt weitere Steuerverbindungen an, aber PipeWire zeigt keinen AirPlay-Audiostream.
+- Eine eigene lokale GET-/info-Abfrage antwortet mit RTSP 200 OK und Modell ShairportSync. Keine aktuelle Sonos-Modellkennung bestätigt.
+- Keine aussagekräftigen AirPlay-Fehlerprotokolle vorhanden. NQPTP 1.2.9 und Shairport melden beide smi11.
+- Ursache nicht eindeutig belegt; Spotify-Abschaltung ist keine bestätigte Reparatur des Sonos-Wechselfehlers. Wiedergabetest steht aus.
