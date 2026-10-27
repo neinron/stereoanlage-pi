@@ -78,14 +78,14 @@ class Keyboard:
 class Terminal:
  def __init__(self,user):
   self.user=user;self.fd=None;self.pid=None
-  self.screen=pyte.HistoryScreen(110,20,history=1000,ratio=0.5);self.stream=pyte.ByteStream(self.screen)
+  self.screen=pyte.HistoryScreen(110,16,history=1000,ratio=0.5);self.stream=pyte.ByteStream(self.screen)
  def start(self):
   if self.fd is not None:return
   account=pwd.getpwnam(self.user)
   if account.pw_uid==0:raise RuntimeError('The terminal user must not be root')
   # A fresh helper process claims the PTY; no unsafe fork of our input threads.
   fd,slave=os.openpty()
-  fcntl.ioctl(slave,0x5414,struct.pack('HHHH',20,110,0,0))
+  fcntl.ioctl(slave,0x5414,struct.pack('HHHH',16,110,0,0))
   try:
    self.process=subprocess.Popen([sys.executable,str(Path(__file__).resolve()),'--shell-fd',str(slave),'--user',self.user],pass_fds=(slave,),start_new_session=True)
   except BaseException:
@@ -266,7 +266,9 @@ class UI:
    d.rounded_rectangle((x,76,x+287,120),10,fill='#315879' if self.focus=='presets' and i==self.preset else '#17222e')
    txt(x+15,86,label,22)
   d.rounded_rectangle((44,137,1876,630),10,fill='#10171e')
-  screen=self.term.screen;cellw=16;cellh=23;ox=62;oy=151
+  screen=self.term.screen;terminal_font=self.font(26,mono=True)
+  cellw=terminal_font.getlength("M");cellh=29;ox=62;oy=149
+  baseline=terminal_font.getmetrics()[0]
   # Cell rendering preserves ANSI colours, cursor, full-screen terminal programs.
   for y in range(screen.lines):
    line=screen.buffer[y]
@@ -274,10 +276,10 @@ class UI:
     cell=line[x];fg=color(cell.fg,'#e5e9ef');bg=color(cell.bg,'#10171e')
     if cell.reverse:fg,bg=bg,fg
     if bg!='#10171e':d.rectangle((ox+x*cellw,oy+y*cellh,ox+(x+1)*cellw,oy+(y+1)*cellh),fill=bg)
-    if cell.data.strip():txt(ox+x*cellw,oy+y*cellh,cell.data,22,fg,True,cell.bold)
+    if cell.data.strip():d.text((ox+x*cellw,oy+y*cellh+baseline),cell.data,font=self.font(26,True,cell.bold),fill=fg,anchor='ls')
     if cell.underscore:d.line((ox+x*cellw,oy+(y+1)*cellh-2,ox+(x+1)*cellw,oy+(y+1)*cellh-2),fill=fg)
   if not screen.cursor.hidden:
-   cx=ox+min(screen.cursor.x,109)*cellw;cy=oy+min(screen.cursor.y,19)*cellh
+   cx=ox+min(screen.cursor.x,screen.columns-1)*cellw;cy=oy+min(screen.cursor.y,screen.lines-1)*cellh
    d.rectangle((cx,cy,cx+cellw-1,cy+cellh-1),outline='#d5e9ff',width=2)
   txt(54,648,self.cec_status,19,'#9caebf')
   mods=' · '.join(k for k,v in [('Shift',self.kb.shift),('Strg',self.kb.ctrl),('Alt',self.kb.alt),('AltGr',self.kb.altgr),('Feststelltaste',self.kb.caps)] if v)
