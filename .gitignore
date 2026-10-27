@@ -10,3 +10,6 @@
 id_*
 *known_hosts*
 .DS_Store
+
+__pycache__/
+*.pyc

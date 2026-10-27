@@ -1,0 +1,22 @@
+[Unit]
+Description=Stereoanlage connection guide on TV
+After=local-fs.target getty@tty1.service
+Conflicts=getty@tty1.service
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /opt/stereoanlage-display/framebuffer.py /opt/stereoanlage-display/welcome.png
+Restart=on-failure
+RestartSec=5
+Nice=10
+NoNewPrivileges=yes
+ProtectHome=yes
+ProtectSystem=strict
+PrivateTmp=yes
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

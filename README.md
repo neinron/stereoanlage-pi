@@ -17,6 +17,7 @@ Raspberry Pi OS Lite 64-bit / Debian 13 (Trixie); DAC-Overlay `iqaudio-dacplus`.
 - [Verifizierter Zustand und offene Punkte](docs/status.md)
 - [Wartung, Diagnose und AirPlay-/Sonos-Test](docs/operations.md)
 - [Konfigurationsvorlagen](config/README.md)
+- [TV-Verbindungsanleitung und Autostart](display/README.md)
 
 `scripts/diagnose.sh` auf dem Pi als Audio-Benutzer ausführen. Es liest nur ausgewählte Zustände und gibt keine Dienstdefinitionen, Umgebungsvariablen oder Journale aus. Ausgabe vor Weitergabe trotzdem prüfen; lokale Mitschnitte ausschließlich in `.local/` ablegen.
 

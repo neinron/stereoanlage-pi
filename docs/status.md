@@ -60,3 +60,9 @@ Shairport Sync blieb durchgehend mit derselben PID aktiv; auch PipeWire und Wire
 ## Spotify Connect wieder aktiviert (27.10.2026)
 
 Auf ausdrücklichen Wunsch wurde die bestehende Installation wieder aktiviert. Der lokale Marker `~/.config/soloist-spotify-enabled` ist angelegt; `soloist.service` ist wieder active und enabled. Der Startbedingungs-Drop-in bleibt bestehen und wird durch den Marker erfüllt. AirPlay lief mit unveränderter PID weiter. Hörbarer Spotify-Wiedergabetest steht noch aus. Die vorherige AirPlay-only-Phase ist damit beendet.
+
+## TV-Anzeige vorbereitet (27.10.2026)
+
+Deutsches Tastaturlayout wurde inzwischen live in `/etc/default/keyboard` bestätigt. Der 16:9-Modus `HDMI-A-2:3840x2160@30` steht in der Boot-Konfiguration; vor einem weiteren Neustart blieb der aktive Framebuffer bei 4096 × 2160.
+
+Die neue statische Verbindungshilfe wurde ohne Audio-Neustart einmal auf den Framebuffer ausgegeben, im Verhältnis 16:9 eingepasst. AirPlay und Soloist blieben active. Dauerhafte Anzeige und reduzierte Bootmeldungen sind unter `~/.local/share/stereoanlage-display/` vorbereitet, aber noch nicht als Systemdienst installiert: Der Nutzer muss das Installationsskript mit sudo ausführen.
