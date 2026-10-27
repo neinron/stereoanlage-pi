@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Static console image; no network, browser, or audio access."""
 import argparse,array,ctypes,fcntl,mmap,os,signal,struct,sys,time
-from PIL import Image,ImageOps
+from PIL import Image,ImageOps,ImageChops
 class Fix(ctypes.Structure):
  _fields_=[('id',ctypes.c_char*16),('smem_start',ctypes.c_ulong),('smem_len',ctypes.c_uint32),('type',ctypes.c_uint32),('type_aux',ctypes.c_uint32),('visual',ctypes.c_uint32),('xpanstep',ctypes.c_uint16),('ypanstep',ctypes.c_uint16),('ywrapstep',ctypes.c_uint16),('line_length',ctypes.c_uint32),('mmio_start',ctypes.c_ulong),('mmio_len',ctypes.c_uint32),('accel',ctypes.c_uint32),('capabilities',ctypes.c_uint16),('reserved',ctypes.c_uint16*2)]
 def framebuffer_info(fd):
@@ -13,11 +13,46 @@ def framebuffer_info(fd):
 def pack_pixels(image,v):
  bpp=v[6];red=v[8:11];green=v[11:14];blue=v[14:17]
  if bpp==16 and red==(11,5,0) and green==(5,6,0) and blue==(0,5,0):
-  r,g,b=(band.tobytes() for band in image.split())
-  return array.array('H',(((rr>>3)<<11)|((gg>>2)<<5)|(bb>>3) for rr,gg,bb in zip(r,g,b))).tobytes()
+  r,g,b=image.split()
+  hi=ImageChops.add(r.point([x&248 for x in range(256)]),g.point([x>>5 for x in range(256)]))
+  lo=ImageChops.add(g.point([(x&28)<<3 for x in range(256)]),b.point([x>>3 for x in range(256)]))
+  return Image.merge('LA',(lo,hi)).tobytes()
  if bpp==32 and red==(16,8,0) and green==(8,8,0) and blue==(0,8,0):
   return image.tobytes('raw','BGRX')
  raise RuntimeError('Unsupported framebuffer pixel format; console left unchanged')
+
+class Display:
+ def __init__(self,console=True):
+  self.fd=os.open('/dev/fb0',os.O_RDWR);self.tty=None;self.memory=None;self.last=None;self.console=console
+ def changed(self):
+  v,fix=framebuffer_info(self.fd)
+  return (tuple(v),fix.line_length,fix.smem_len)!=self.last
+ def show(self,source):
+  v,fix=framebuffer_info(self.fd)
+  w,h,xv,yv,xo,yo,bpp=v[:7]
+  if w<=0 or h<=0 or fix.line_length<w*bpp//8:raise RuntimeError('Invalid display geometry')
+  key=(tuple(v),fix.line_length,fix.smem_len)
+  image=ImageOps.pad(source,(w,h),method=Image.Resampling.BILINEAR,color='black')
+  pixels=pack_pixels(image,v)
+  if self.console and self.tty is None:
+   self.tty=os.open('/dev/tty1',os.O_RDWR|os.O_NOCTTY)
+   os.write(self.tty,b'\x1b[?25l\x1b[9;0]\x1b[14;0]')
+   fcntl.ioctl(self.tty,0x4B3A,1)
+  if key!=self.last:
+   if self.memory:self.memory.close()
+   self.memory=mmap.mmap(self.fd,fix.smem_len);self.last=key
+  rowbytes=w*bpp//8;start=yo*fix.line_length+xo*bpp//8
+  if start+(h-1)*fix.line_length+rowbytes>fix.smem_len:raise RuntimeError('Framebuffer too small')
+  if fix.line_length==rowbytes and xo==0:self.memory[start:start+len(pixels)]=pixels
+  else:
+   for y in range(h):
+    offset=start+y*fix.line_length
+    self.memory[offset:offset+rowbytes]=pixels[y*rowbytes:(y+1)*rowbytes]
+ def close(self):
+  if self.memory:self.memory.close();self.memory=None
+  if self.fd is not None:os.close(self.fd);self.fd=None
+  if self.tty is not None:
+   fcntl.ioctl(self.tty,0x4B3A,0);os.write(self.tty,b'\x1b[?25h');os.close(self.tty);self.tty=None
 
 def main():
  p=argparse.ArgumentParser();p.add_argument('image');p.add_argument('--once',action='store_true');p.add_argument('--no-console',action='store_true');args=p.parse_args()

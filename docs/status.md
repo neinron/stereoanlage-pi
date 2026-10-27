@@ -66,3 +66,9 @@ Auf ausdrücklichen Wunsch wurde die bestehende Installation wieder aktiviert. D
 Deutsches Tastaturlayout wurde inzwischen live in `/etc/default/keyboard` bestätigt. Der 16:9-Modus `HDMI-A-2:3840x2160@30` steht in der Boot-Konfiguration; vor einem weiteren Neustart blieb der aktive Framebuffer bei 4096 × 2160.
 
 Die neue statische Verbindungshilfe wurde ohne Audio-Neustart einmal auf den Framebuffer ausgegeben, im Verhältnis 16:9 eingepasst. AirPlay und Soloist blieben active. Dauerhafte Anzeige und reduzierte Bootmeldungen sind unter `~/.local/share/stereoanlage-display/` vorbereitet, aber noch nicht als Systemdienst installiert: Der Nutzer muss das Installationsskript mit sudo ausführen.
+
+## Vollständige TV-Tastatur gebaut (27.10.2026)
+
+Auf Nutzerwunsch Terminal mit vollständiger deutscher Bildschirmtastatur und üblichen HDMI-CEC-Tastencodes fertiggestellt. Echte Samsung-Tasten sollen ausdrücklich erst später getestet werden. CEC-Anmeldung am verbundenen `/dev/cec1` als „Stereoanlage“ war möglich; der Empfang konkreter Tastendrücke ist unbestätigt.
+
+Acht Softwaretests und eine echte PTY-Sitzung als `jaron` samt Strg+C auf dem Pi erfolgreich. Neue Oberfläche unter `~/.local/share/stereoanlage-display/` zur Aktualisierung vorbereitet. Der laufende Systemdienst verwendet bis zum erneuten sudo-Aufruf des Installers weiterhin die bisherige statische Anzeige. Keine Audio-Dienste neu gestartet.

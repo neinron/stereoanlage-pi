@@ -1,5 +1,5 @@
 [Unit]
-Description=Stereoanlage connection guide on TV
+Description=Stereoanlage guide and HDMI-CEC terminal
 After=local-fs.target getty@tty1.service
 Conflicts=getty@tty1.service
 StartLimitIntervalSec=60
@@ -7,13 +7,12 @@ StartLimitBurst=3
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python3 /opt/stereoanlage-display/framebuffer.py /opt/stereoanlage-display/welcome.png
+ExecStart=/usr/bin/python3 /opt/stereoanlage-display/tv_console.py --user jaron
 Restart=on-failure
 RestartSec=5
+KillMode=mixed
+TimeoutStopSec=8
 Nice=10
-NoNewPrivileges=yes
-ProtectHome=yes
-ProtectSystem=strict
 PrivateTmp=yes
 StandardOutput=journal
 StandardError=journal

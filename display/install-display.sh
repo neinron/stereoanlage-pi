@@ -6,8 +6,13 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 src=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 python3 -c 'from PIL import Image; import ast,pathlib,sys; Image.open(sys.argv[1]).verify(); ast.parse(pathlib.Path(sys.argv[2]).read_text())' "$src/welcome.png" "$src/framebuffer.py"
+python3 -c 'import ast,pathlib,sys; p=pathlib.Path(sys.argv[1]); sys.path.insert(0,str(p/"vendor")); import pyte; ast.parse((p/"tv_console.py").read_text())' "$src"
+command -v cec-ctl >/dev/null || { echo 'cec-ctl fehlt'; exit 1; }
 install -d -m 755 /opt/stereoanlage-display
-install -m 644 "$src/framebuffer.py" "$src/welcome.png" /opt/stereoanlage-display/
+install -m 644 "$src/framebuffer.py" "$src/tv_console.py" "$src/welcome.png" /opt/stereoanlage-display/
+cp -R "$src/vendor" /opt/stereoanlage-display/
+chmod -R a+rX /opt/stereoanlage-display/vendor
+chown -R root:root /opt/stereoanlage-display
 install -m 644 "$src/stereoanlage-display.service" /etc/systemd/system/stereoanlage-display.service
 python3 - <<'PY'
 from pathlib import Path
@@ -25,7 +30,8 @@ if new!=s:
  p.write_text(new)
 PY
 systemctl daemon-reload
-systemctl enable --now stereoanlage-display.service
+systemctl enable stereoanlage-display.service
+systemctl restart stereoanlage-display.service
 systemctl --no-pager --full status stereoanlage-display.service
-printf '\nTV-Anzeige eingerichtet. Kein Neustart, keine Audio-Dienste verändert.\n'
+printf '\nTV-Anzeige mit Bildschirmtastatur eingerichtet. Kein Neustart, keine Audio-Dienste verändert.\n'
 printf 'Leiser Bootbildschirm und neue HDMI-Auflösung gelten ab nächstem Neustart.\n'
