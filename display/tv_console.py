@@ -22,7 +22,7 @@ ROWS=[['Esc']+['F'+str(i) for i in range(1,13)],
  ['Fest']+list('asdfghjklöä#')+['Enter'],
  ['Shift']+list('<yxcvbnm,.-')+['Shift'],
  ['Strg','Alt','AltGr','Leer','←','↓','↑','→','Pos1','Ende','Einfg','Entf'],
- ['Bild↑','Bild↓','Strg+C','Strg+D','Strg+L','Verlauf↑','Verlauf↓','Anleitung','Kreuz']]
+ ['Bild↑','Bild↓','Strg+C','Strg+D','Strg+L','Verlauf↑','Verlauf↓','Anleitung']]
 PRESETS=[('Status','systemctl --user is-active shairport-sync soloist pipewire wireplumber'),('AirPlay-Log','journalctl -b _COMM=shairport-sync -n 60 --no-pager'),('Audio','wpctl status'),('Netzwerk','ip -br address'),('Tastatur',None),('Anleitung',None)]
 PALETTE={'black':'#15191d','red':'#ed7b83','green':'#a4d48a','brown':'#dec388','blue':'#86b8fa','magenta':'#c6a1ea','cyan':'#85ccce','white':'#e5e9ef','brightblack':'#7c8793','brightred':'#ff8b90','brightgreen':'#b5e798','brightbrown':'#eed199','brightblue':'#a2c9ff','brightmagenta':'#d8b9f8','brightcyan':'#a4e4e4','brightwhite':'#ffffff','default':'#e5e9ef'}
 def color(value,default):
@@ -122,7 +122,7 @@ class Radial:
 
 # Approximate ISO German keyboard geometry: staggered letter rows, wide modifiers.
 def qwertz_geometry(row):
- units={0:[1]*13,1:[1]*13+[2],2:[1.5]+[1]*12,3:[1.8]+[1]*12+[1.7],4:[1.3]+[1]*11+[2.7],5:[1.4,1.4,1.4,4,1,1,1,1,1,1,1,1],6:[1.2,1.2,1.4,1.4,1.4,1.6,1.6,1.6,1.6]}
+ units={0:[1]*13,1:[1]*13+[2],2:[1.5]+[1]*12,3:[1.8]+[1]*12+[1.7],4:[1.3]+[1]*11+[2.7],5:[1.4,1.4,1.4,4,1,1,1,1,1,1,1,1],6:[1.3,1.3,1.5,1.5,1.5,1.8,1.8,2]}
  cursor=54;scale=111
  result=[]
  for width in units[row]:
@@ -247,7 +247,7 @@ class USBKeyboard:
 
 class UI:
  def __init__(self,user,font_root='/usr/share/fonts/truetype/dejavu'):
-  self.term=Terminal(user);self.kb=Keyboard();self.radial=Radial();self.layout='radial';self.mode='home';self.focus='keys';self.preset=0;self.cec_status='Fernbedienung: HDMI-CEC';self.font_root=Path(font_root)
+  self.term=Terminal(user);self.kb=Keyboard();self.radial=Radial();self.layout='qwertz';self.mode='home';self.focus='keys';self.preset=0;self.cec_status='Fernbedienung: HDMI-CEC';self.font_root=Path(font_root)
   self.welcome=Image.open(ROOT/'welcome.png').convert('RGB').resize((1920,1080),Image.Resampling.LANCZOS)
   self.fonts={};self.physical_mods=set();self.physical_caps=False
  def font(self,n,mono=False,bold=False):
@@ -278,7 +278,7 @@ class UI:
    elif k=='OK':
     label,cmd=PRESETS[self.preset]
     if label=='Anleitung':self.mode='home'
-    elif label=='Tastatur':self.layout='qwertz' if self.layout=='radial' else 'radial';self.focus='keys'
+    elif label=='Tastatur':self.layout='qwertz';self.focus='keys'
     else:self.term.send((cmd+'\r').encode())
    return
   if k=='UP' and self.kb.row==0:self.focus='presets';return
@@ -287,7 +287,7 @@ class UI:
    if self.term.fd is None:self.term.start()
    result=self.kb.press()
    if result=='Anleitung':self.mode='home'
-   elif result=='Kreuz':self.layout='radial';self.radial.reset()
+   elif result=='Kreuz':self.layout='qwertz';self.radial.reset()
    elif result=='Verlauf↑':self.term.screen.prev_page()
    elif result=='Verlauf↓':self.term.screen.next_page()
    elif isinstance(result,bytes):self.term.send(result)

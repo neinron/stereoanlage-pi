@@ -72,3 +72,7 @@ Für ursprüngliche Bootmeldungen die Display-Optionen aus `cmdline.txt` entfern
 Marken und Symbole gehören ihren jeweiligen Rechteinhabern; dies ist eine private Bedienhilfe.
 
 Die elf Tests prüfen zusätzlich die Erreichbarkeit sämtlicher 128 Einträge der Kreuztastatur, die Rückkehr zur Gruppenauswahl und die natürliche QWERTZ-Geometrie. Echte TV-Fernbedienung weiterhin noch nicht getestet.
+
+## Aktuelle Auswahl
+
+Auf Nutzerwunsch ist ausschließlich die natürliche QWERTZ-Anordnung über die Oberfläche erreichbar. Die Kreuz-Umschaltung wurde entfernt; QWERTZ ist wieder Standard.
