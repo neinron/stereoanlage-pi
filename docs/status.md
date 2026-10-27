@@ -56,3 +56,7 @@ Shairport Sync blieb durchgehend mit derselben PID aktiv; auch PipeWire und Wire
 - Eine eigene lokale GET-/info-Abfrage antwortet mit RTSP 200 OK und Modell ShairportSync. Keine aktuelle Sonos-Modellkennung bestätigt.
 - Keine aussagekräftigen AirPlay-Fehlerprotokolle vorhanden. NQPTP 1.2.9 und Shairport melden beide smi11.
 - Ursache nicht eindeutig belegt; Spotify-Abschaltung ist keine bestätigte Reparatur des Sonos-Wechselfehlers. Wiedergabetest steht aus.
+
+## Spotify Connect wieder aktiviert (27.10.2026)
+
+Auf ausdrücklichen Wunsch wurde die bestehende Installation wieder aktiviert. Der lokale Marker `~/.config/soloist-spotify-enabled` ist angelegt; `soloist.service` ist wieder active und enabled. Der Startbedingungs-Drop-in bleibt bestehen und wird durch den Marker erfüllt. AirPlay lief mit unveränderter PID weiter. Hörbarer Spotify-Wiedergabetest steht noch aus. Die vorherige AirPlay-only-Phase ist damit beendet.
