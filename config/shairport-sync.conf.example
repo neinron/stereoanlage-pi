@@ -1,5 +1,7 @@
 // Ausschnitt: bestätigte Einstellungen, kein vollständiger Ist-Snapshot.
 general = {
+    // Require AirPlay 2; retry via systemd if NQPTP is not ready yet.
+    service_type = "airplay2";
     name = "Stereoanlage AirPlay";
     output_backend = "pipewire";
     interpolation = "soxr";

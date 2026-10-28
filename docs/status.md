@@ -72,3 +72,11 @@ Die neue statische Verbindungshilfe wurde ohne Audio-Neustart einmal auf den Fra
 Auf Nutzerwunsch Terminal mit vollständiger deutscher Bildschirmtastatur und üblichen HDMI-CEC-Tastencodes fertiggestellt. Echte Samsung-Tasten sollen ausdrücklich erst später getestet werden. CEC-Anmeldung am verbundenen `/dev/cec1` als „Stereoanlage“ war möglich; der Empfang konkreter Tastendrücke ist unbestätigt.
 
 Acht Softwaretests und eine echte PTY-Sitzung als `jaron` samt Strg+C auf dem Pi erfolgreich. Neue Oberfläche unter `~/.local/share/stereoanlage-display/` zur Aktualisierung vorbereitet. Der laufende Systemdienst verwendet bis zum erneuten sudo-Aufruf des Installers weiterhin die bisherige statische Anzeige. Keine Audio-Dienste neu gestartet.
+
+## AirPlay 2 verbindlich aktiviert (28.10.2026)
+
+Im Fehlerzustand lief Shairport trotz AirPlay-2-Build im klassischen Modus auf Port 5000 mit ap1-Threads. Startzeitpunkte belegten: Shairport startete etwa fünf Sekunden vor NQPTP. Der offizielle Quellcode beschreibt den Rückfall von auto auf classic bei beim Start fehlendem NQPTP.
+
+Auf ausdrückliche Freigabe wurde in der Benutzerkonfiguration `general.service_type = "airplay2"` ergänzt, die vorherige Datei datiert gesichert und ausschließlich der Benutzer-Dienst shairport-sync neu gestartet. Die vorhandene Restart-on-failure-Regel versucht bei noch fehlendem NQPTP später erneut zu starten.
+
+Anschließend bestätigt: AirPlay lauscht auf Port 7000, kein Listener auf 5000, GET /info antwortet RTSP 200 OK, keine automatischen Neustarts. NQPTP, Spotify, PipeWire und WirePlumber bleiben active. Kein Pi-Neustart. Gemeinsamer hörbarer Sonos-Test steht noch aus; die Behebung des beobachteten Rückfalls ist bestätigt, das Multiroom-Ergebnis noch nicht.
